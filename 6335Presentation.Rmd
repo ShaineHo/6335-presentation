@@ -95,7 +95,7 @@ bechdel_clean <- movies_clean %>%
 
 ## Criteria of passing the test
 --
-<img src= "BechdelTest.jpeg" width = "90%"> 
+<img src= "plots/BechdelTest.jpeg" width = "90%"> 
 
 ---
 
@@ -135,15 +135,15 @@ description %>%
 
 .panelset[
 
-.panel[.panel-name[Failed Examples]
+.panel[.panel-name[Overview of the test]
 
-<img src= "Inception.jpeg" width = "24%"> <img src= "shawshank.jpeg" width = "24%"> <img src= "darkknight.jpeg" width = "24%"> <img src= "lotr.jpeg" width = "24%">
+<img src= "plots/Inception.jpeg" width = "24%"> <img src= "plots/shawshank.jpeg" width = "24%"> <img src= "plots/darkknight.jpeg" width = "24%"> <img src= "plots/lotr.jpeg" width = "24%">
 
-<img src= "gump.webp" width = "49%"> <img src= "starwars.jpeg" width = "49%"> 
+<img src= "plots/gump.webp" width = "49%"> <img src= "plots/starwars.jpeg" width = "49%"> 
 
 ]
 
-.panel[.panel-name[plots]
+.panel[.panel-name[Analysis]
 
 ```{r, out.width="100%"}
 color.test <- c(FAIL = '#A93226', PASS = '#237C3A')
@@ -179,7 +179,7 @@ ggplotly(bechdel_imdb_budget)
 
 ---
 
-### The Bechdel Test Result
+### The trend of Bechdel Test Results
 
 .panelset[
 .panel[.panel-name[By percentage]
@@ -197,7 +197,7 @@ test_prop <- bechdel_clean %>%
   geom_hline(yintercept = 0.5, linetype = "dashed", size = 0.5, color = "#004E97")+
   theme_classic() +
   theme(legend.position = "right") +
-  labs(x = "1/2 Decade",
+  labs(x = "Year",
       y = "Proportion") +
   scale_y_continuous(label = scales::percent,
                        breaks = seq(0, 1, by = 0.2))+
@@ -261,10 +261,10 @@ ggplotly(test_movie)
 ]
 ---
 
+### Results by regions
+
 .panelset[
 .panel[.panel-name[Leaflet]
-
-## Passing Rate of the Bechdel Test by Countries
 
 ```{r}
 total <- bechdel_clean %>% 
@@ -342,20 +342,18 @@ htmltools::tags$iframe(
 .pull-left[
 
 
-### - Countries produced more than 5 movies 
+#### - Include Regions with >5 data only 
 
-### - Most of the countries failed the test
+#### - Most of the countries failed the test
 
-### - Surprisingly, 2/3 of Indian movies passed
+#### - Surprisingly, 2/3 Indian movies passed
 
-<img src= "indianmovie.jpeg" width = "80%">
+<img src= "plots/indianmovie.jpeg" width = "80%">
 
 ]
 
-
 .pull-right[
 
-#### Number of movies Tested
 
 ```{r}
 bechdel_clean %>% 
@@ -371,7 +369,7 @@ bechdel_clean %>%
   arrange(desc(RATE)) %>% 
  kable(align = "c", 
       col.names = c("Location","FAILURE", "PASS", "PASSING RATE (%)")) %>% 
-  row_spec(0, color = "white", background = "#277BC0") %>% 
+  row_spec(0, color = "white", background = "#82C5D2") %>% 
   kable_styling(bootstrap_options = "striped", font_size = 14) 
 
 ```
@@ -380,6 +378,76 @@ bechdel_clean %>%
 
 ]
 ]
+
+---
+
+### By Genre
+
+```{r out.width="100%"}
+genre_plot <- movies_clean %>%
+  drop_na(genre1) %>% 
+  mutate(binary = ifelse(binary == "PASS", 1, 0)) %>% 
+  group_by(genre1) %>% 
+  summarise(percentage_pass = mean(binary),
+            n = n()) %>% 
+  ungroup() %>% 
+  top_n(10, n) %>% 
+  mutate(genre1 = reorder(genre1, percentage_pass)) %>% 
+  ggplot(aes(genre1, percentage_pass)) +
+  geom_col(fill = "#82C5D2")+ 
+   geom_hline(yintercept = 0.5, linetype = "dashed", color = "red4")+
+  theme_classic() +
+  coord_flip()+
+    labs(title = "The Bechdel test passing rate for Top 10 genres",
+       subtitle = "Horror pass the Bechdel Test most frequently, while Mystery do so just 23% of the time.",
+       caption = "Figure 8",
+       x = "Genre",
+       y = "Percentage of films that pass the Bechdel Test")+
+  scale_y_continuous(label = scales::percent,
+                       breaks = seq(0, 0.7, by = 0.1))
+
+
+ggplotly(genre_plot)
+```
+
+- Highest passing rate in Horror movies
+- Only horror, drama and comedy genre pass
+
+---
+
+```{r out.width="100%"}
+roi <- movies_clean %>% 
+  filter(year>1990) %>% 
+  mutate(return = (intgross_2013 -  budget_2013)  / budget_2013,
+         decade = floor(year/10) * 10) 
+
+roi_plot <- roi %>% 
+  group_by(binary, decade) %>% 
+  ggplot((aes(binary, 
+              log(return),
+              fill = binary
+              ))) +
+  geom_boxplot(aes(text = title)) +
+  facet_wrap(~decade, scales = "free") +
+  theme_classic() +
+  theme(legend.position = "none") +
+  labs(title = "Return of investment by the Bechdel test result over decades",
+      subtitle = "Decades from 1990 - 2010 with ROI on Bechdel test",
+      caption = "Figure 6",
+      x = "Bechdel test",
+      y = "Log return")+
+  scale_fill_manual(values =color.group)
+
+ggplotly(roi_plot, tooltip = "text") 
+```
+
+
+- Boxplot of the return of investment on movies   
+
+- Higher ROI on movies passed the test    
+
+- Movies passed slightly outperformed the failed
+
 
 
 
