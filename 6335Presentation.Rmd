@@ -24,7 +24,7 @@ style_solarized_light(header_color = "#1F3065",
 
 class: center, bottom, inverse
 
-background-image: url(bechdeltestcartoon.jpeg)
+background-image: url(plots/bechdeltestcartoon.jpeg)
 
 background-position: top
 
@@ -47,8 +47,8 @@ library(kableExtra)
 library(plotly)
 library(leaflet)
 library(xaringanExtra)
-description <- read_csv("bechdel_data_description.csv")
-bechdel_clean <- read_csv("bechdel_clean.csv")
+description <- read_csv("data/bechdel_data_description.csv")
+bechdel_clean <- read_csv("data/bechdel_clean.csv")
 xaringanExtra::use_panelset()
 ```
 
