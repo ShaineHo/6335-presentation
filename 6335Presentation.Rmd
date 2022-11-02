@@ -5,13 +5,22 @@ institute: "City University of Hong Kong"
 date: "`r Sys.Date()`"
 output:
   xaringan::moon_reader:
-    lib_dir: libs
+    css: xaringan-themer.css
     seal: false
     nature:
-      highlightStyle: github
+      highlightStyle: solarized-light
       highlightLines: true
       countIncrementalSlides: false
 ---
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+style_solarized_light(header_color = "#1F3065",
+                      header_h1_font_size = "2.25rem",
+                      header_h2_font_size = "1.75rem",
+                      header_h3_font_size = "1.35rem",)
+
+```
 
 class: center, bottom, inverse
 
@@ -19,13 +28,15 @@ background-image: url(bechdeltestcartoon.jpeg)
 
 background-position: top
 
-# Studies of Bechdel Test 
+## Studies of Bechdel Test 
 
-## HE Qiu, HO Yin Shan, LYU Rui, SI Wen, SUN Weichen
+#### HE Qiu, HO Yin Shan, LYU Rui, SI Wen, SUN Weichen
 
-### `r Sys.Date()`
+#### `r Sys.Date()`
 
 ---
+
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE,
@@ -72,7 +83,41 @@ bechdel_clean <- movies_clean %>%
 ```{css echo = F}
 .pull-right{width: 40%;}
 .pull-left{width: 60%}
+.font-color{color: #1F3065}
 ``` 
+
+## Presentation Contents
+
+.pull-left[
+
+### - Introduction
+
+
+### - Data Description
+
+
+### - Bechdel Results Analysis:
+.font-color[
+1. IMDB Ratings
+2. Time Change
+3. Region
+4. Genre 
+5. Runtime
+6. Budget & ROI
+]
+
+
+### - Conclusion & Limitations
+
+
+### - References
+]
+
+.pull-right[
+<img src= "plots/bechdelmeme.jpeg">
+]
+
+---
 
 ## Introduction
 
@@ -102,7 +147,9 @@ bechdel_clean <- movies_clean %>%
 
 .pull-left[
 
-```{r, message=FALSE}
+### Data Overview
+
+```{r, message=FALSE, out.width="80%"}
 visdat::vis_dat(bechdel_clean,
                 palette = "cb_safe")
 ```
@@ -125,7 +172,10 @@ description %>%
  kable(align = "c", 
       col.names = c("Variables","Description", "Type")) %>% 
   row_spec(0, color = "white", background = "#277BC0") %>% 
-  kable_styling(bootstrap_options = "striped", font_size = 12) %>% 
+  column_spec(1, background = "white") %>% 
+  column_spec(2, background = "white") %>% 
+  column_spec(3, background = "white") %>% 
+  kable_styling(bootstrap_options = "striped", font_size = 12, ) %>% 
   scroll_box(width = "100%", height = "500px")
 ```
 
@@ -178,6 +228,23 @@ ggplotly(bechdel_imdb_budget)
 ]
 
 ---
+
+```{css echo = F}
+.fail-font{
+  font-weight: bold;
+  font-style: italic;
+  font-size: 1.5em;
+  color: darkred;
+}
+
+.pass-font{
+  font-weight: bold;
+  font-style: italic;
+  font-size: 1.5em;
+  color: darkgreen;
+}
+```
+
 
 ### The trend of Bechdel Test Results
 
@@ -239,29 +306,28 @@ ggplotly(test_movie)
 .panel[.panel-name[Explanations]
 
 
-#### Result of the Bechdel test with 5 levels
+### Result of the Bechdel test with 5 levels
 
-- **dubious**    
+- .fail-font[dubious]    
   the topic the conversation between the women in the picture was dubious
     
-- **men**    
+- .fail-font[men]  
   the women in the picture only talked about men
   
-- **notalk**    
+- .fail-font[notalk]    
   the women in the picture did not talk to each other
-  
-- **ok**    
-  passed the test
-  
-- **nowomen**    
+
+- .fail-font[nowomen]    
   there was less than 2 named women in the picture
   
-
+- .pass-font[ok]   
+  passed the test
+  
 ]
 ]
 ---
 
-### Results by regions
+### Regions
 
 .panelset[
 .panel[.panel-name[Leaflet]
@@ -341,11 +407,11 @@ htmltools::tags$iframe(
 .pull-left[
 
 
-#### - Include Regions with >5 data only 
+#### - Include Regions with **>5 data** only 
 
-#### - Most of the countries failed the test
+#### - **Most of the countries failed** the test
 
-#### - Surprisingly, 2/3 Indian movies passed
+#### - **2 out of 3 Indian movies** passed
 
 <img src= "plots/indianmovie.jpeg" width = "80%">
 
@@ -380,7 +446,7 @@ bechdel_clean %>%
 
 ---
 
-#### By Genre
+### Genre
 
 ```{r out.width="90%"}
 genre<- movies_clean %>%
@@ -409,11 +475,43 @@ genre<- movies_clean %>%
 ggplotly(genre)
 ```
 
-- Highest passing rate in Horror movies
-- Only horror, drama and comedy genre pass
+- Highest passing rate in **Horror movies**
+- Only **horror**, **drama** and **comedy** genre pass
 
 ---
 
+### Runtime 
+
+```{r out.width="100%"}
+topruntime10 <- movies_clean %>% 
+  select(binary, runtime, title) %>% 
+  na.omit() %>% 
+  group_by(binary) %>% 
+  arrange(desc(runtime)) %>% 
+  head(10) 
+
+runtime <- movies_clean %>% 
+  select(binary, runtime, title) %>% 
+  na.omit() %>% 
+  arrange(runtime) %>% 
+  head(10) %>% 
+  rbind(topruntime10) %>% 
+  ggplot(aes(x = runtime,
+             y = reorder(title,runtime),
+             color = binary))+ 
+  geom_point()+
+  theme_bw() +
+  labs(title = "Bechdel test results based on runtime",
+       x = "Run time (in minutes)",
+       y = "Movie Title") +
+  scale_color_manual(values = color.test)
+
+ggplotly(runtime)
+```
+
+- The test results **not likely affected by runtime**
+
+---
 .panelset[
 .panel[.panel-name[Budget]
 
@@ -480,39 +578,6 @@ ggplotly(roi_plot, tooltip = "text")
 
 ---
 
-By Runtime 
-
-```{r out.width="100%"}
-topruntime10 <- movies_clean %>% 
-  select(binary, runtime, title) %>% 
-  na.omit() %>% 
-  group_by(binary) %>% 
-  arrange(desc(runtime)) %>% 
-  head(10) 
-
-runtime <- movies_clean %>% 
-  select(binary, runtime, title) %>% 
-  na.omit() %>% 
-  arrange(runtime) %>% 
-  head(10) %>% 
-  rbind(topruntime10) %>% 
-  ggplot(aes(x = runtime,
-             y = reorder(title,runtime),
-             color = binary))+ 
-  geom_point()+
-  theme_bw() +
-  labs(title = "Bechdel test results based on runtime",
-       x = "Run time (in minutes)",
-       y = "Movie Title") +
-  scale_color_manual(values = color.test)
-
-ggplotly(runtime)
-```
-
-- The test results not likely affected by runtime
-
----
-
 ### Conclusion & Limitations
 --
 
@@ -548,37 +613,26 @@ ggplotly(runtime)
 # References
 
 - Thomas Mock (2021). Tidy Tuesday: A weekly data project aimed at the R ecosystem. https://github.com/rfordatascience/tidytuesday.
-
-- Walt Hickey (Apr 1, 2014). FiveThirtyEight: The Dollar-And-Cents Case Against Hollywood’s Exclusion of Women.https://fivethirtyeight.com/features/the-dollar-and-cents-case-against-hollywoods-exclusion-of-women/
-
-- Data downloaded from https://bechdeltest.com
-
+- Walt Hickey (Apr 1, 2014). FiveThirtyEight: The Dollar-And-Cents Case Against Hollywood’s Exclusion of Women. https://fivethirtyeight.com/features/the-dollar-and-cents-case-against-hollywoods-exclusion-of-women/
 - Wickham et al., (2019). Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686, https://doi.org/10.21105/joss.01686
-
 - Antoine Fabri (2020). unglue: Extract Matched Substrings Using a Pattern. R package version 0.1.0. https://CRAN.R-project.org/package=unglue
-
 - Garrett Grolemund, Hadley Wickham (2011). Dates and Times Made Easy with lubridate. Journal of Statistical Software, 40(3), 1-25. URL https://www.jstatsoft.org/v40/i03/.
-
 - Hao Zhu (2021). kableExtra: Construct Complex Table with 'kable' and Pipe Syntax. R package version 1.3.4. https://CRAN.R-project.org/package=kableExtra
+- Elin Waring, Michael Quinn, Amelia McNamara, Eduardo Arino de la Rubia, Hao Zhu and Shannon Ellis (2021). skimr: Compact and Flexible Summaries of Data. R package version 2.1.3. https://CRAN.R-project.org/package=skimr
 
 ---
 
-- Elin Waring, Michael Quinn, Amelia McNamara, Eduardo Arino de la Rubia, Hao Zhu and Shannon Ellis (2021). skimr: Compact and Flexible Summaries of Data. R package version 2.1.3. https://CRAN.R-project.org/package=skimr
-
 - Nicholas Tierney, Di Cook, Miles McBain and Colin Fay (2021). naniar: Data Structures, Summaries, and Visualisations for Missing Data. R package version 0.6.1. https://CRAN.R-project.org/package=naniar
-
 - Thomas Lin Pedersen (2020). patchwork: The Composer of Plots. R package version 1.1.1. https://CRAN.R-project.org/package=patchwork
-
 - Stefan Milton Bache and Hadley Wickham (2020). magrittr: A Forward-Pipe Operator for R. R package version 2.0.1. https://CRAN.R-project.org/package=magrittr
-
 - Winston Chang, (2014). extrafont: Tools for using fonts. R package version 0.17. https://CRAN.R-project.org/package=extrafont
-
 - Hadley Wickham (2021). tidyr: Tidy Messy Data. R package version 1.1.3. https://CRAN.R-project.org/package=tidyr
-
 - Claus O. Wilke (2020). ggtext: Improved Text Rendering Support for 'ggplot2'. R package version 0.1.1. https://CRAN.R-project.org/package=ggtext
-
 - Thomas Lin Pedersen (2021). ggforce: Accelerating 'ggplot2'. R package version 0.3.3. https://CRAN.R-project.org/package=ggforce
-
 - C. Sievert. Interactive Web-Based Data Visualization with R, plotly, and shiny. Chapman and Hall/CRC Florida, 2020.
-
 - Thomas Lin Pedersen (2020). patchwork: The Composer of Plots. R package version 1.1.1. https://CRAN.R-project.org/package=patchwork
+- Data downloaded from https://bechdeltest.com
+
+---
+
+<img src= "plots/end.gif">
