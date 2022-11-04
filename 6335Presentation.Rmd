@@ -413,7 +413,7 @@ htmltools::tags$iframe(
 
 #### - **2 out of 3 Indian movies** passed
 
-<img src= "plots/indianmovie.jpeg" width = "80%">
+<img src= "plots/indianmovie.jpeg" width = "42%"> <img src= "plots/indianmovie2.jpeg" width = "40%"> 
 
 ]
 
