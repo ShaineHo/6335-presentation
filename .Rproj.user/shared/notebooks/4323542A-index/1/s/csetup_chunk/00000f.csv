@@ -1,0 +1,46 @@
+"0","knitr::opts_chunk$set(fig.align = ""center"","
+"0","                      out.width = ""90%"","
+"0","                      echo = FALSE, "
+"0","                      message = FALSE, "
+"0","                      warning = FALSE)"
+"0","library(tidyverse)"
+"0","library(unglue)"
+"0","library(lubridate)"
+"0","library(kableExtra)"
+"0","library(skimr)"
+"0","library(naniar)"
+"2","
+Attaching package: ‘naniar’
+
+"
+"2","The following object is masked from ‘package:skimr’:
+
+    n_complete
+
+"
+"0","library(patchwork)"
+"0","library(magrittr) "
+"2","
+Attaching package: ‘magrittr’
+
+"
+"2","The following object is masked from ‘package:purrr’:
+
+    set_names
+
+"
+"2","The following object is masked from ‘package:tidyr’:
+
+    extract
+
+"
+"0","library(tidyr)"
+"0","library(extrafont)"
+"2","Registering fonts with R
+"
+"0","library(ggtext)"
+"0","library(ggforce)"
+"0","library(plotly)"
+"0","library(patchwork)"
+"0","library(DataExplorer)"
+"0","library(ggpubr)"

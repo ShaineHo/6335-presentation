@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<style>body{background-color:white;}</style>
+<script src="lib/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="lib/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="lib/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="lib/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="lib/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="lib/kePrint-0.0.1/kePrint.js"></script>
+<link href="lib/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+</head>
+<body>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; overflow-x: scroll; width:100%; "><table class="table table-striped" style="font-size: 12px; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:center;color: white !important;background-color: #277BC0 !important;position: sticky; top:0; background-color: #FFFFFF;"> Variables </th>
+   <th style="text-align:center;color: white !important;background-color: #277BC0 !important;position: sticky; top:0; background-color: #FFFFFF;"> Description </th>
+   <th style="text-align:center;color: white !important;background-color: #277BC0 !important;position: sticky; top:0; background-color: #FFFFFF;"> Type </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:center;background-color: white !important;"> year </td>
+   <td style="text-align:center;background-color: white !important;"> The year movie was released </td>
+   <td style="text-align:center;background-color: white !important;"> Integer </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;background-color: white !important;"> title </td>
+   <td style="text-align:center;background-color: white !important;"> The title of the movie. </td>
+   <td style="text-align:center;background-color: white !important;"> Character </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;background-color: white !important;"> clean_test </td>
+   <td style="text-align:center;background-color: white !important;"> Result of the Bechdel test with 5 levels </td>
+   <td style="text-align:center;background-color: white !important;"> Factor </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;background-color: white !important;"> binary </td>
+   <td style="text-align:center;background-color: white !important;"> Binary result of the Bechdel test </td>
+   <td style="text-align:center;background-color: white !important;"> Factor </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;background-color: white !important;"> budget_2013 </td>
+   <td style="text-align:center;background-color: white !important;"> Inflation adjusted budget of the movie in 2013 dollars </td>
+   <td style="text-align:center;background-color: white !important;"> Numeric </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;background-color: white !important;"> domgross_2013 </td>
+   <td style="text-align:center;background-color: white !important;"> Inflation adjusted domestic gross of the movie in 2013 dollars </td>
+   <td style="text-align:center;background-color: white !important;"> Numeric </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;background-color: white !important;"> intgross_2013 </td>
+   <td style="text-align:center;background-color: white !important;"> Inflation adjusted international gross of the movie in 2013 dollars </td>
+   <td style="text-align:center;background-color: white !important;"> Numeric </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;background-color: white !important;"> imdb_id </td>
+   <td style="text-align:center;background-color: white !important;"> Unique ID for each movie </td>
+   <td style="text-align:center;background-color: white !important;"> Character </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;background-color: white !important;"> language1 </td>
+   <td style="text-align:center;background-color: white !important;"> The language 1 of the movie </td>
+   <td style="text-align:center;background-color: white !important;"> Factor </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;background-color: white !important;"> language2 </td>
+   <td style="text-align:center;background-color: white !important;"> The language 2 of the movie </td>
+   <td style="text-align:center;background-color: white !important;"> Factor </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;background-color: white !important;"> language3 </td>
+   <td style="text-align:center;background-color: white !important;"> The language 3 of the movie </td>
+   <td style="text-align:center;background-color: white !important;"> Factor </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;background-color: white !important;"> country1 </td>
+   <td style="text-align:center;background-color: white !important;"> The country 1 of the movie </td>
+   <td style="text-align:center;background-color: white !important;"> Factor </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;background-color: white !important;"> country2 </td>
+   <td style="text-align:center;background-color: white !important;"> The country 2 of the movie </td>
+   <td style="text-align:center;background-color: white !important;"> Factor </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;background-color: white !important;"> country3 </td>
+   <td style="text-align:center;background-color: white !important;"> The country 3 of the movie </td>
+   <td style="text-align:center;background-color: white !important;"> Factor </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;background-color: white !important;"> metascore </td>
+   <td style="text-align:center;background-color: white !important;"> Metascore of the movie </td>
+   <td style="text-align:center;background-color: white !important;"> Numeric </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;background-color: white !important;"> imdb_rating </td>
+   <td style="text-align:center;background-color: white !important;"> IMDb rating of the movie </td>
+   <td style="text-align:center;background-color: white !important;"> Numeric </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;background-color: white !important;"> director1 </td>
+   <td style="text-align:center;background-color: white !important;"> The first director of the movie </td>
+   <td style="text-align:center;background-color: white !important;"> Factor </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;background-color: white !important;"> director2 </td>
+   <td style="text-align:center;background-color: white !important;"> The second director of the movie </td>
+   <td style="text-align:center;background-color: white !important;"> Factor </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;background-color: white !important;"> director3 </td>
+   <td style="text-align:center;background-color: white !important;"> The third director of the movie </td>
+   <td style="text-align:center;background-color: white !important;"> Factor </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;background-color: white !important;"> genre1 </td>
+   <td style="text-align:center;background-color: white !important;"> The first genre 1 of the movie </td>
+   <td style="text-align:center;background-color: white !important;"> Factor </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;background-color: white !important;"> genre2 </td>
+   <td style="text-align:center;background-color: white !important;"> The first genre 2 of the movie </td>
+   <td style="text-align:center;background-color: white !important;"> Factor </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;background-color: white !important;"> genre3 </td>
+   <td style="text-align:center;background-color: white !important;"> The first genre 3 of the movie </td>
+   <td style="text-align:center;background-color: white !important;"> Factor </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;background-color: white !important;"> runtime </td>
+   <td style="text-align:center;background-color: white !important;"> The runtime of the movie in minutes </td>
+   <td style="text-align:center;background-color: white !important;"> Numeric </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;background-color: white !important;"> poster </td>
+   <td style="text-align:center;background-color: white !important;"> The http address of the poster of the movie </td>
+   <td style="text-align:center;background-color: white !important;"> Character </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;background-color: white !important;"> imdb_votes </td>
+   <td style="text-align:center;background-color: white !important;"> The number of IMDb votes of the movie </td>
+   <td style="text-align:center;background-color: white !important;"> Numeric </td>
+  </tr>
+</tbody>
+</table></div> <script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath: [["$","$"]]}})</script><script async src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

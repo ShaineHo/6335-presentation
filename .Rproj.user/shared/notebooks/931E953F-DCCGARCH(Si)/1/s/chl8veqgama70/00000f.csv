@@ -1,0 +1,19 @@
+"0","   date1 %>%
+     cbind(overnightcorrG_H) %>% 
+     left_join(dhcorr) %>% 
+     rename(""1HSI&GSPC"" = ""overnight_corr_gh"",
+            ""2HSI&DJI"" = ""overnight_corr_hd"") %>% 
+     pivot_longer(cols = c(`1HSI&GSPC`, `2HSI&DJI`),
+                 values_to = ""Corr"",
+                 names_to = ""Index"") %>% 
+  # filter(Date > ""2014-11-17"") %>% 
+     ggplot(aes(x = Date, y = Corr, color = Index)) +
+     geom_line()+
+     geom_hline(yintercept = 0.5, linetype = 2, color = ""red"") +
+     geom_vline(xintercept = as.numeric(as.Date('2014-12-17')), linetype = 2, color = ""blue"")+
+     labs(y = ""Correlation"",
+          title = ""Correlation between Return of HSI and DJI"")+
+     theme_classic()
+"
+"2","Error in cbind(., overnightcorrG_H) : object 'date1' not found
+"
