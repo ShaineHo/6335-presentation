@@ -287,7 +287,7 @@ test_prop <- bechdel_clean %>%
 
 ]
 
-.panel[.panel-name[By Number]
+.panel[.panel-name[By Number(Animation)]
 
 <img src= "plots/animation.gif">
 
@@ -519,11 +519,11 @@ us <- test %>%
       y = "Number of movies",
       title = "Trend of Bechdel Results in the USA") +
   guides(fill=guide_legend(title="Test"))+
-  scale_fill_manual(values = c(pass = "#95D196", 
-                               dubious = "#F5B7B1", 
-                               men = "#F1948A",
-                               notalk = "#D85C4D",
-                               nowomen = "#B44C4B"))
+  scale_fill_manual(values = c(pass = "#302F82", 
+                               dubious = "#EC7063", 
+                               men = "#B03A2E",
+                               notalk = "#922B21",
+                               nowomen = "#641E16"))
 
 ggplotly(us)
 ```
@@ -533,6 +533,34 @@ ggplotly(us)
 - **Movie boom** and **higher passing rate** since 1990s
 
 - **Higher female participation** BUT **only supportive role**
+
+]
+
+.panel[.panel-name[USA percentage]
+
+```{r, out.width="100%", out.height = "90%"}
+color.group <- c(FAIL = "#922B21", PASS = "#302F82")
+
+test_prop_us <- bechdel_clean %>% 
+  filter(country1 == "USA") %>% 
+  mutate(five_year = floor(year/5) * 5) %>% 
+  count(five_year, binary) %>% 
+  group_by(five_year)%>% 
+   mutate(prop = n/sum(n)) %>% 
+  ggplot(aes(five_year, prop, fill = binary)) +
+  geom_col() +
+  geom_hline(yintercept = 0.5, linetype = "dashed", size = 0.5, color = "#2ECC71")+
+  theme_classic() +
+  theme(legend.position = "right") +
+  labs(x = "Year",
+      y = "Proportion") +
+  scale_y_continuous(label = scales::percent,
+                       breaks = seq(0, 1, by = 0.2))+
+  scale_fill_manual(values = color.group) +
+  guides(fill=guide_legend(title="Bechdel test")) 
+
+  ggplotly(test_prop_us)
+```
 
 ]
 
@@ -610,6 +638,8 @@ ggplotly(runtime)
 .panel[.panel-name[Budget]
 
 ```{r out.width= "100%"}
+color.budget <- c(FAIL = '#B44C4B', PASS = '#6C976C')
+
 budget_plot <- movies_clean %>% 
    mutate(return = intgross_2013  / budget_2013,
          decade = floor(year/10) * 10) %>% 
@@ -628,7 +658,7 @@ budget_plot <- movies_clean %>%
   scale_y_continuous(label = scales::unit_format(unit = "", scale = 1e-6),
                        breaks = seq(0, 70000000, by = 10000000)
                      ) +
-  scale_fill_manual(values = color.group)
+  scale_fill_manual(values = color.budget)
 
 ggplotly(budget_plot)
 ```
@@ -660,7 +690,7 @@ roi_plot <- roi %>%
       caption = "Figure 6",
       x = "Bechdel test",
       y = "Log return")+
-  scale_fill_manual(values =color.group)
+  scale_fill_manual(values =color.budget)
 
 ggplotly(roi_plot, tooltip = "text") 
 ```
