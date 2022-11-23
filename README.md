@@ -2,6 +2,8 @@
 
 - This is the repository of Group 18's Data Visualizaion Project.
 
+- The whole project was ** done by R **with some CSS settings in our html file.
+
 - As it contains some local settings, you need to render the rmd with the whole file. 
 
 - Please use the top right green buttom "Code" to **download the zip file** of our project
