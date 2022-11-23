@@ -4,10 +4,14 @@
 
 - The whole project was **Done by R** with some CSS settings in our html file.
 
-- As it contains some local settings, you need to render the rmd with the whole file. 
+- As the Presntation was done in Xaringan, it is a html file, and it contains some interactive plots and a animation, which contain some local settings, you need to render the rmd with the whole file. 
 
-- Please use the top right green buttom "Code" to **download the zip file** of our project
+### Stpes to render the file:
 
-- You can click the **6335Present.html** after unzip the file downloaed to view our Project
+- Please use the top right green buttom "Code" to **download the zip file** of our project.
 
-- OR, You can use the **6335Presentatin.Rmd** to knit the document
+- Firstly, You need to double click the **6335Present.Rproj** to get the whole settings.
+
+- And then, you can click the **6335Present.html** to view our project after unziping the file downloaed.
+
+- OR, You can use the **6335Presentatin.Rmd** to knit the document.
