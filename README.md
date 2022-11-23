@@ -4,7 +4,7 @@
 
 - The whole project was **Done by R** with some CSS settings in our html file.
 
-- As the Presntation was done in Xaringan, it is a html file, and it contains some interactive plots and a animation, which contain some local settings, you need to render the rmd with the whole file. 
+- As the Presntation was done in Xaringan, it is a html file, and it contains some interactive plots and a animation, which include some local settings, you need to render the rmd with the whole file. 
 
 ### Stpes to render the file:
 
