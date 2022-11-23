@@ -19,7 +19,6 @@ style_solarized_light(header_color = "#1F3065",
                       header_h1_font_size = "2.25rem",
                       header_h2_font_size = "1.75rem",
                       header_h3_font_size = "1.35rem",)
-
 ```
 
 class: center, bottom, inverse
@@ -36,7 +35,11 @@ background-position: top
 
 ---
 
-
+```{css echo = F}
+.pull-right{width: 40%;}
+.pull-left{width: 60%;}
+.font-color{color: #1F3065}
+```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE,
@@ -47,6 +50,10 @@ library(kableExtra)
 library(plotly)
 library(leaflet)
 library(xaringanExtra)
+library(lubridate)
+library(gganimate)
+library(gifski)
+library(lubridate)
 description <- read_csv("data/bechdel_data_description.csv")
 bechdel_clean <- read_csv("data/bechdel_clean.csv")
 xaringanExtra::use_panelset()
@@ -74,17 +81,20 @@ factor_cols <- c("binary",
                  "genre1","genre2", "genre3",
                  "director1","director2", "director3", 
                  "language1","language2", "language3",
-                 "country1","country2", "country3")
+                 "country1","country2", "country3",
+                 "clean_test")
 
 bechdel_clean <- movies_clean %>% 
-  mutate_each_(funs(factor(.)), factor_cols)
+  mutate_each_(funs(factor(.)), factor_cols) %>%
+  mutate(clean_test = factor(case_when(clean_test == "ok" ~ "Pass",
+                                         clean_test == "dubious" ~ "Dubious",
+                                         clean_test == "men" ~ "Women only talk\nabout men",
+                                         clean_test == "notalk" ~ "Women don't talk\nto each other",
+                                         clean_test == "nowomen" ~ "Fewer than two\nwomen")))
+
+
 ```
 
-```{css echo = F}
-.pull-right{width: 40%;}
-.pull-left{width: 60%}
-.font-color{color: #1F3065}
-``` 
 
 ## Presentation Contents
 
@@ -249,6 +259,7 @@ ggplotly(bechdel_imdb_budget)
 ### The trend of Bechdel Test Results
 
 .panelset[
+
 .panel[.panel-name[By percentage]
 
 ```{r, out.width="100%", out.height = "90%"}
@@ -274,31 +285,57 @@ test_prop <- bechdel_clean %>%
   ggplotly(test_prop)
 ```
 
-
 ]
 
 .panel[.panel-name[By Number]
 
-```{r out.width="100%", out.height = "90%"}
-color <- c(ok = "#95D196", 
-           dubious = "#F5B7B1", 
-           men = "#F1948A",
-           notalk = "#D85C4D",
-           nowomen = "#B44C4B")
+<img src= "plots/animation.gif">
 
-test_movie <- bechdel_clean %>% 
+```{r eval=FALSE}
+test_movie<- bechdel_clean %>% 
+  mutate(year = as.Date(as.character(bechdel_clean$year), format = "%Y")) %>%
   group_by(year, clean_test) %>% 
-  count() %>% 
-  ggplot(aes(year, n, fill = clean_test))+
-  geom_area()  +
+  count()
+
+test_movie <- test_movie %>% mutate(clean_test = recode(clean_test, "Dubious" = "dubious",
+                                           "Women only talk\nabout men" = "men",
+                                           "Women don't talk\nto each other" = "notalk",
+                                           "Fewer than two\nwomen" = "nowomen",
+                                           "Pass" = "pass"))
+
+test_movie$clean_test <- factor(test_movie$clean_test, levels = c("dubious",
+                                           "men",
+                                           "notalk",
+                                           "nowomen",
+                                           "pass"
+                                           ))
+
+test<- test_movie %>% 
+  pivot_wider(names_from = clean_test,
+              values_from = n) %>% 
+  pivot_longer(cols = c("dubious","men", "notalk","nowomen","pass"),
+               names_to = "clean_test",
+               values_to = "count")
+d[is.na(d)] <- 0
+ test$count[is.na(test$count)] <- 0
+
+animate <- test %>% 
+  ggplot(aes(year, count, fill = clean_test))+
+  geom_area()+
   theme_classic() +
-  theme(legend.position = "bottom") +
+  theme(legend.position = "right") +
   labs(x = "Year",
       y = "Number of movies") +
   guides(fill=guide_legend(title="Test"))+
-  scale_fill_manual(values = color)
+  scale_fill_manual(values = c(pass = "#95D196", 
+                               dubious = "#F5B7B1", 
+                               men = "#F1948A",
+                               notalk = "#D85C4D",
+                               nowomen = "#B44C4B"))+
+  transition_reveal(year)
 
-ggplotly(test_movie)
+animate(animate,fps = 15, height = 500, width =750, end_pause = 15, renderer = gifski_renderer("plots/animation.gif"))
+
 ```
 
 ]
@@ -402,7 +439,7 @@ htmltools::tags$iframe(
 
 ]
 
-.panel[.panel-name[Analysis]
+.panel[.panel-name[Leaflet Analysis]
 
 .pull-left[
 
@@ -418,7 +455,6 @@ htmltools::tags$iframe(
 ]
 
 .pull-right[
-
 
 ```{r}
 bechdel_clean %>% 
@@ -442,6 +478,64 @@ bechdel_clean %>%
 ]
 
 ]
+
+.panel[.panel-name[Trend in USA]
+
+```{r eval=TRUE, out.width= "90%"}
+test_movie<- bechdel_clean %>% 
+  filter(country1 == "USA") %>% 
+  #mutate(year = as.Date(as.character(bechdel_clean$year), format = "%Y")) %>%
+  group_by(year, clean_test) %>% 
+  count()
+
+test_movie <- test_movie %>% mutate(clean_test = recode(clean_test, "Dubious" = "dubious",
+                                           "Women only talk\nabout men" = "men",
+                                           "Women don't talk\nto each other" = "notalk",
+                                           "Fewer than two\nwomen" = "nowomen",
+                                           "Pass" = "pass"))
+
+test_movie$clean_test <- factor(test_movie$clean_test, levels = c("dubious",
+                                           "men",
+                                           "notalk",
+                                           "nowomen",
+                                           "pass"
+                                           ))
+
+test<- test_movie %>% 
+  pivot_wider(names_from = clean_test,
+              values_from = n) %>% 
+  pivot_longer(cols = c("dubious","men", "notalk","nowomen","pass"),
+               names_to = "clean_test",
+               values_to = "count")
+
+ test$count[is.na(test$count)] <- 0
+
+us <- test %>% 
+  ggplot(aes(year, count, fill = clean_test))+
+  geom_area()+
+  theme_classic() +
+  theme(legend.position = "right") +
+  labs(x = "Year",
+      y = "Number of movies",
+      title = "Trend of Bechdel Results in the USA") +
+  guides(fill=guide_legend(title="Test"))+
+  scale_fill_manual(values = c(pass = "#95D196", 
+                               dubious = "#F5B7B1", 
+                               men = "#F1948A",
+                               notalk = "#D85C4D",
+                               nowomen = "#B44C4B"))
+
+ggplotly(us)
+```
+
+- USA has the highest number of movie production
+
+- **Movie boom** and **higher passing rate** since 1990s
+
+- **Higher female participation** BUT **only supportive role**
+
+]
+
 ]
 
 ---
@@ -527,7 +621,7 @@ budget_plot <- movies_clean %>%
              fill = binary))+
   geom_col(position = "dodge") + 
   theme_classic() +
-  labs(title = "The Bechdel test with respect to the averagte films budget",
+  labs(title = "The Bechdel test with respect to the average films budget",
       caption = "Figure 5",
       x = "Bechdel test binary result",
       y = "Average budget (in million USD)") +
@@ -585,29 +679,31 @@ ggplotly(roi_plot, tooltip = "text")
 
 --
 
-2. Female tend to play more important role in **German and Spanish movies**
+2. Less gender biased in **German and Spanish movies**
+
+3. **Relatively higher female participation** in the USA, but **only supporting role**(No conversations between them)
 
 --
 
-3. Female tend to play relatively important in **horror, comedy and drama** genre movies
+4. Female plays relatively important role in **horror, comedy and drama** genre
 
 --
 
-4.  Investors of Movie industry invested more in the **male dominant movies**
+5. Results of the test are **not affected by runtime**
 
 --
 
-5. Movies with **female participation** tend to have **relatively higher profit**
+6.  Investors of Movie industry invested more in the **male dominant movies**
 
 --
 
-6. Results of the test are **not affected by runtime**
+7. Movies with **female participation** tend to have **relatively higher profit**
 
 --
 
-7. Data **coverage is not enough** 
+8. Data **coverage is not enough** 
 
-<img src= "plots/cinderella.png" width = "43%"> <img src= "plots/batman.jpeg" width = "49%">
+<img src= "plots/cinderella.png" width = "37%"> <img src= "plots/batman.jpeg" width = "42%">
 
 ---
 # References
